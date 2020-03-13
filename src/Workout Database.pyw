@@ -29,7 +29,7 @@ import sys
 class MyDialog(wx.Dialog):
 
     def __init__(self, title):
-        wx.Dialog.__init__(self, None, title = title, size = (320, 750))
+        wx.Dialog.__init__(self, None, title=title, size=(320, 750))
 
         con = sqlite3.connect('workout.sqlite')
         cur = con.cursor()
@@ -80,13 +80,13 @@ class MyDialog(wx.Dialog):
         self.crunches.SetValue('0')
         self.planks.SetValue('0')
 
-        ok_button = wx.Button(self, id = wx.ID_OK, pos = (50, 670))
+        ok_button = wx.Button(self, id=wx.ID_OK, pos=(50, 670))
         
 
 
 class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, id, pos = wx.DefaultPosition, size = wx.DefaultSize, style = 0):
+    def __init__(self, parent, id, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
 
         wx.ListCtrl.__init__(self, parent, id, pos, size, style)
         mixlist.TextEditMixin.__init__(self)
@@ -135,12 +135,12 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
             dlg = wx.MessageDialog(self, str(error), 'Error occured') 
             dlg.ShowModal() 
 
-class MyFrame(wx.Frame):
+class MainFrame(wx.Frame):
 
-    def __init__(self, parent, id = wx.ID_ANY, title = "Workout Database", pos = wx.DefaultPosition, 
-                    size = (1160, 540), style = wx.DEFAULT_FRAME_STYLE, name = "MyFrame"):
+    def __init__(self, parent, id=wx.ID_ANY, title="Workout Database", pos=wx.DefaultPosition, 
+                    size = (1160, 540), style=wx.DEFAULT_FRAME_STYLE, name="MainFrame"):
         
-        super(MyFrame, self).__init__(parent, id, title, pos, size, style, name)
+        super(MainFrame, self).__init__(parent, id, title, pos, size, style, name)
 
         panel = wx.Panel(self, wx.ID_ANY)
         panel.SetBackgroundColour((200, 200, 200))
@@ -152,8 +152,8 @@ class MyFrame(wx.Frame):
         menubar = wx.MenuBar()
         file_menu = wx.Menu()
         file_menu.Append(101, '&Insert New Record\tCtrl+N', 'Insert a new workout record')
-        file_menu.Append(102, '&Exit\tCtrl+Q', 'Close the program')
         file_menu.AppendSeparator()
+        file_menu.Append(102, '&Exit\tCtrl+Q', 'Close the program')
 
         tools_menu = wx.Menu()
         #tools_menu.Append(201, '&Change Theme', "Change the current theme")
@@ -164,20 +164,20 @@ class MyFrame(wx.Frame):
         submenu.Append(303, 'Green/Blue', kind = wx.ITEM_RADIO)
 
         #tools_menu.AppendMenu(201, 'Change Theme', submenu)
-        tools_menu.Append(202, '&Refresh Database\tF5', 'Re-display database with updated data')
-        tools_menu.AppendSeparator()
+        tools_menu.Append(202, '&Refresh Database\tF5', 'Display database with updated data')
 
         preferences_menu = wx.Menu()
         preferences_menu.Append(201, 'Change Theme', submenu)
         
         help_menu = wx.Menu()
-        help_menu.Append(401, '&About Workout Manager', 'About this program')
+        help_menu.Append(401, '&About', 'About this program')
         help_menu.AppendSeparator()
+        help_menu.Append(402, '&Contact', 'Contact the author')
 
         self.Bind(wx.EVT_MENU, self.OnClose, id = 102)
         self.Bind(wx.EVT_MENU, self.callDialog, id = 401)
         self.Bind(wx.EVT_MENU, self.OnAdd, id = 101)
-        #self.Bind(wx.EVT_MENU, MyListCtrl.populate_list, id = 202)
+        self.Bind(wx.EVT_MENU, self.callDialog2, id=402)
 
         menubar.Append(file_menu, "&File")
         menubar.Append(tools_menu, "&Tools")
@@ -278,36 +278,61 @@ class MyFrame(wx.Frame):
 
             except sqlite3.Error:
                 dlg = wx.MessageDialog(self, str(error), 'Error occured')
-                dlg.ShowModal()        # display error message
+                dlg.ShowModal()
         
-        dlg.Destroy() # destroy the dialog box
+        dlg.Destroy()
 
     def callDialog(self, event):                              
-        dlg = OpenedDialog(1)
+        dlg = OpenedAboutDialog(1)
+        btnID = dlg.ShowModal()
+
+        if btnID == wx.ID_OK:
+            dlg.Destroy()
+
+    def callDialog2(self, event):                              
+        dlg = OpenedAboutDialogBox(1)
         btnID = dlg.ShowModal()
 
         if btnID == wx.ID_OK:
             dlg.Destroy()
 
 
-class OpenedDialog(wx.Dialog):
+class OpenedAboutDialog(wx.Dialog):
     def __init__(self, d_state):
-        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (370, 200))                           
+        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (470, 250))                           
 
-        about_text = '''Workout Manager is a front-end program that manages \n
+        about_text = '''\tWorkout Manager is a front-end program that manages \n
                         a database used to track the number and growth of \n
                         specific excersizes over time, as well as calculate \n
                         calories, and help plan for your future gains.'''
 
+        self.about_label = wx.StaticText(self, -1, about_text, pos = (50, 30))
+        self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (200, 180))
+
+
+class OpenedAboutDialogBox(wx.Dialog):
+    def __init__(self, d_state):
+        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (400, 250))                           
+
+        about_text = '''\tQuestions or concerns? Reach out to us at \n
+                        csesock@murraystate.edu'''
+
         self.about_label = wx.StaticText(self, -1, about_text, pos = (30, 30))
-        self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (150, 120))
+        self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (180, 120))
+
+
+
+
+
 
 
 if __name__ == "__main__":
     app = wx.App()
-    MyFrame(None, -1, "Workout Manager")
+    MainFrame(None, -1, "Workout Manager")
     app.MainLoop()
 
 
 
-    
+
+
+
