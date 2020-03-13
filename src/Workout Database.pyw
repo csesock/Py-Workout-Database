@@ -3,6 +3,7 @@
 
 import sqlite3, wx
 import wx.lib.mixins.listctrl as mixlist
+import sys
 
 # build the structure for the table
 ##workout = '''CREATE TABLE workout (
@@ -110,7 +111,7 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
         self.populate_list()
 
     def populate_list(self):
-
+        
         self.DeleteAllItems()
  
         try: 
@@ -137,7 +138,8 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
 class MyFrame(wx.Frame):
 
     def __init__(self, parent, id = wx.ID_ANY, title = "Workout Database", pos = wx.DefaultPosition, 
-                    size = (1200, 540), style = wx.DEFAULT_FRAME_STYLE, name = "MyFrame"):
+                    size = (1160, 540), style = wx.DEFAULT_FRAME_STYLE, name = "MyFrame"):
+        
         super(MyFrame, self).__init__(parent, id, title, pos, size, style, name)
 
         panel = wx.Panel(self, wx.ID_ANY)
@@ -166,7 +168,7 @@ class MyFrame(wx.Frame):
         tools_menu.AppendSeparator()
 
         preferences_menu = wx.Menu()
-        preferences_menu.AppendMenu(201, 'Change Theme', submenu)
+        preferences_menu.Append(201, 'Change Theme', submenu)
         
         help_menu = wx.Menu()
         help_menu.Append(401, '&About Workout Manager', 'About this program')
@@ -187,9 +189,11 @@ class MyFrame(wx.Frame):
 
         ###########################################################
 
-        self.list = MyListCtrl(panel, -1, style = wx.LC_REPORT, pos = (20, 30), size = (1110, 350))
+        self.list = MyListCtrl(panel, -1, style=wx.LC_REPORT, pos=(20, 30), size=(1110, 350))
 
-        self.calculate_calories_button = wx.Button(panel, -1, label = "Caculate Calories", pos = (20, 400))
+        self.calculate_calories_button = wx.Button(panel, -1, label="Caculate Calories", pos=(20, 400))
+        self.calculate_day_calories_button = wx.Button(panel, -1, label="Calculate Day", pos=(150, 400))
+        self.calculate_range_calories_button = wx.Button(panel, -1, label="Calculate Range", pos=(260, 400))
 
         self.Bind(wx.EVT_LIST_END_LABEL_EDIT, self.OnEdit)
         self.Bind(wx.EVT_LIST_BEGIN_LABEL_EDIT, self.OnBeginEdit)
@@ -212,8 +216,10 @@ class MyFrame(wx.Frame):
         self.list.populate_list()
 
     def UpdateRecord(self, workoutID, columnID, data):
-        fields = ['date', 'pushups', 'chest_press', 'squats', 'lunges', 'vertical_press', 'pullups', 'dumbell_row', 'bicep_curls', 'preacher_curls',
-                  'tricep_lifts', 'tricep_pushups', 'situps', 'crunches', 'planks']
+        fields = ['date', 'pushups', 'chest_press', 'squats',
+                  'lunges', 'vertical_press', 'pullups', 'dumbell_row',
+                  'bicep_curls', 'preacher_curls', 'tricep_lifts',
+                  'tricep_pushups', 'situps', 'crunches', 'planks']
 
         con = sqlite3.connect('workout.sqlite')
         cur = con.cursor()
@@ -254,20 +260,21 @@ class MyFrame(wx.Frame):
             planks = dlg.planks.GetValue()
 
         # check to see that no field is left empty
-        if (current_date != "" and pushups != "" and chest_press != "" and squats != "" and lunges != "" and vertical_press != "" and pullups != "" and
-            dumbell_row != "" and bicep_curls != "" and preacher_curls != "" and tricep_lifts != "" and tricep_pushups != "" and situps != "" and
-            crunches != "" and planks != ""):
+        if (current_date != "" and pushups != "" and chest_press != ""
+            and squats != "" and lunges != "" and vertical_press != ""
+            and pullups != "" and dumbell_row != "" and bicep_curls != ""
+            and preacher_curls != "" and tricep_lifts != "" and tricep_pushups != ""
+            and situps != "" and crunches != "" and planks != ""):
 
             try:
-                con = sqlite3.connect('workout.sqlite')  # connect to the database
+                con = sqlite3.connect('workout.sqlite')
                 cur = con.cursor()
                 
                 sql = "INSERT INTO workout VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" # insert new data (parameterized query)
 
-                cur.execute(sql, (current_date, pushups, chest_press, squats, lunges, vertical_press, pullups, dumbell_row, bicep_curls, 
-                            preacher_curls, tricep_lifts, tricep_pushups, situps, crunches, planks))
+                cur.execute(sql, (current_date, pushups, chest_press, squats, lunges, vertical_press, pullups, dumbell_row,
+                                  bicep_curls, preacher_curls, tricep_lifts, tricep_pushups, situps, crunches, planks))
                 con.commit()
-
 
             except sqlite3.Error:
                 dlg = wx.MessageDialog(self, str(error), 'Error occured')
@@ -285,13 +292,14 @@ class MyFrame(wx.Frame):
 
 class OpenedDialog(wx.Dialog):
     def __init__(self, d_state):
-        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (370, 200))
-                                        
+        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (370, 200))                           
 
-        about_text = '''Workout Manager is a front-end program that manages \na database used to track the number and growth of \nspecific excersizes over time, as well as calculate \ncalories, and help plan for your future gains.'''
+        about_text = '''Workout Manager is a front-end program that manages \n
+                        a database used to track the number and growth of \n
+                        specific excersizes over time, as well as calculate \n
+                        calories, and help plan for your future gains.'''
 
         self.about_label = wx.StaticText(self, -1, about_text, pos = (30, 30))
-
         self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (150, 120))
 
 
