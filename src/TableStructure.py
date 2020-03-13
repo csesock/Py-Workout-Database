@@ -2,7 +2,7 @@
 ## on March 13th, 2020
 ##
 
- build the structure for the table
+#build the structure for the table
 workout = '''CREATE TABLE workout (
             Date DATETIME PRIMARY KEY,
             Push_Up INTEGER(3),
