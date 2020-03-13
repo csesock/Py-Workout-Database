@@ -1,4 +1,4 @@
-# Written by Christopher Sesock beginning September 26th, 2017
+## Written by: Chris Sesock on May 3rd, 2020
 ##
 
 import sqlite3, wx
@@ -136,7 +136,7 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
             cur.close() 
             con.close() 
  
-        except sqlite3.Error, error: 
+        except sqlite3.Error: 
             dlg = wx.MessageDialog(self, str(error), 'Error occured') 
             dlg.ShowModal() 
 
@@ -280,7 +280,7 @@ class MyFrame(wx.Frame):
                 con.commit()
 
 
-            except sqlite3.Error, error:
+            except sqlite3.Error:
                 dlg = wx.MessageDialog(self, str(error), 'Error occured')
                 dlg.ShowModal()        # display error message
         
