@@ -312,18 +312,13 @@ class OpenedAboutDialog(wx.Dialog):
 
 class OpenedAboutDialogBox(wx.Dialog):
     def __init__(self, d_state):
-        wx.Dialog.__init__(self, None, title = "About Workout Manager", size = (400, 250))                           
+        wx.Dialog.__init__(self, None, title = "Contact", size = (400, 250))                           
 
         about_text = '''\tQuestions or concerns? Reach out to us at \n
                         csesock@murraystate.edu'''
 
         self.about_label = wx.StaticText(self, -1, about_text, pos = (30, 30))
         self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (180, 120))
-
-
-
-
-
 
 
 if __name__ == "__main__":
