@@ -4,7 +4,6 @@
 import sqlite3, wx
 import wx.lib.mixins.listctrl as mixlist
 
-
 # build the structure for the table
 ##workout = '''CREATE TABLE workout (
 ##            Date DATETIME PRIMARY KEY,
@@ -110,17 +109,13 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
 
         self.populate_list()
 
-
-        
-
     def populate_list(self):
 
-        self.DeleteAllItems() # clear all rows in list 
+        self.DeleteAllItems()
  
         try: 
             con = sqlite3.connect('workout.sqlite') 
             cur = con.cursor() 
- 
             cur.execute("SELECT * FROM workout")
             results = cur.fetchall() 
  
@@ -132,15 +127,12 @@ class MyListCtrl(wx.ListCtrl, mixlist.TextEditMixin, mixlist.ListCtrlAutoWidthMi
                 else: 
                     self.SetItemBackgroundColour(count, (200, 200, 200)) 
                 count += 1 
- 
             cur.close() 
             con.close() 
  
         except sqlite3.Error: 
             dlg = wx.MessageDialog(self, str(error), 'Error occured') 
             dlg.ShowModal() 
-
-
 
 class MyFrame(wx.Frame):
 
@@ -150,7 +142,7 @@ class MyFrame(wx.Frame):
 
         panel = wx.Panel(self, wx.ID_ANY)
         panel.SetBackgroundColour((200, 200, 200))
-        ico = wx.Icon('workout-icon.png')
+        ico = wx.Icon('../assets/workout-icon.png')
         self.SetIcon(ico)
 
         ########################################################## MENU/STATUS BAR
@@ -198,14 +190,12 @@ class MyFrame(wx.Frame):
         self.list = MyListCtrl(panel, -1, style = wx.LC_REPORT, pos = (20, 30), size = (1110, 350))
 
         self.calculate_calories_button = wx.Button(panel, -1, label = "Caculate Calories", pos = (20, 400))
-        #self.calculate_calories_button.Bind(wx.EVT_BUTTON, self.
 
         self.Bind(wx.EVT_LIST_END_LABEL_EDIT, self.OnEdit)
         self.Bind(wx.EVT_LIST_BEGIN_LABEL_EDIT, self.OnBeginEdit)
 
         self.Centre()
         self.Show(True)
-
 
     def OnBeginEdit(self, event):
         if event.GetColumn() == 0:
@@ -238,7 +228,6 @@ class MyFrame(wx.Frame):
 
     def OnClose(self, event):
         self.Close()
-
 
     def OnAdd(self, event):
 
@@ -286,22 +275,12 @@ class MyFrame(wx.Frame):
         
         dlg.Destroy() # destroy the dialog box
 
-
-
-
-
-
-        
-
     def callDialog(self, event):                              
         dlg = OpenedDialog(1)
         btnID = dlg.ShowModal()
 
         if btnID == wx.ID_OK:
             dlg.Destroy()
-
-
-
 
 
 class OpenedDialog(wx.Dialog):
@@ -316,28 +295,10 @@ class OpenedDialog(wx.Dialog):
         self.ok_button = wx.Button(self, id = wx.ID_OK, pos = (150, 120))
 
 
-
-
 if __name__ == "__main__":
     app = wx.App()
-    MyFrame(None, -1, "Workout Manager v0.2")
+    MyFrame(None, -1, "Workout Manager")
     app.MainLoop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
