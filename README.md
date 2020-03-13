@@ -6,6 +6,8 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](https://opensource.org/licenses/GPL-3.0)
 
 
-#Py-Workout-Database
+# Py-Workout-Database
 
 General use workout tracker built with Python3 frontend and a sqlite database backend.
+
+Store workouts and calculate calories based on those workouts. 
