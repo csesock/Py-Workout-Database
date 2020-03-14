@@ -11,3 +11,5 @@
 General use workout tracker built with Python3 frontend and a sqlite database backend.
 
 Store workouts and calculate calories based on those workouts. 
+
+![Screenshot](https://i.imgur.com/u2dozM9.png)
